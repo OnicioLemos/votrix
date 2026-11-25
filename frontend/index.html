@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Votrix · Entrar</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%230A0E1A%27/%3E%3Cpath d=%27M9 9l14 14M23 9L9 23%27 stroke=%27%2322D3EE%27 stroke-width=%273.5%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="tela-acesso">
+    <div class="caixa-acesso">
+      <span class="logo logo-grande">VOTRI<span>X</span></span>
+      <p class="subtitulo">Votação da Feira Técnica de Tecnologia</p>
+
+      <div class="card">
+        <div style="text-align:center;margin-bottom:1.2rem" id="statusVotacao"></div>
+        <div id="alerta" class="oculto" role="alert"></div>
+
+        <form id="formLogin" novalidate>
+          <div class="campo">
+            <label for="cpf">CPF</label>
+            <input id="cpf" name="cpf" inputmode="numeric" autocomplete="username" placeholder="000.000.000-00" required>
+          </div>
+          <div class="campo">
+            <label for="senha">Senha</label>
+            <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+          </div>
+          <button class="btn btn-primario btn-bloco" type="submit" id="btnEntrar">Entrar</button>
+        </form>
+      </div>
+
+      <p class="rodape-acesso" id="rodape">
+        Ainda não tem cadastro? <a href="cadastro.html">Cadastre-se</a>
+      </p>
+      <p class="rodape-acesso oculto" id="linkPodio">
+        <a class="btn btn-bloco" href="podio.html">Ver o pódio</a>
+      </p>
+    </div>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

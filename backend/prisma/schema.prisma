@@ -1,0 +1,69 @@
+// Votrix - modelo de dados
+// Prisma travado na versão 6, como nos projetos anteriores.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Perfil {
+  ELEITOR
+  ADMIN
+}
+
+enum StatusVotacao {
+  NAO_INICIADA
+  ABERTA
+  ENCERRADA
+}
+
+model Usuario {
+  id       Int      @id @default(autoincrement())
+  nome     String   @db.VarChar(100)
+  cpf      String   @unique @db.Char(11) // RN04: CPF único
+  senha    String
+  perfil   Perfil   @default(ELEITOR)
+  criadoEm DateTime @default(now())
+  voto     Voto?
+
+  @@map("votrix_usuarios")
+}
+
+model Projeto {
+  id        Int      @id @default(autoincrement())
+  nome      String   @unique @db.VarChar(80)
+  equipe    String   @db.VarChar(200)
+  descricao String?  @db.VarChar(500)
+  estande   String?  @db.VarChar(20)
+  imagemUrl String?  @db.VarChar(500)
+  ativo     Boolean  @default(true)
+  criadoEm  DateTime @default(now())
+  votos     Voto[]
+
+  @@map("votrix_projetos")
+}
+
+model Voto {
+  id        Int      @id @default(autoincrement())
+  usuarioId Int      @unique // RN10: um voto por usuário (CPF)
+  projetoId Int
+  criadoEm  DateTime @default(now()) @db.DateTime(3)
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  projeto   Projeto  @relation(fields: [projetoId], references: [id])
+
+  @@index([projetoId])
+  @@map("votrix_votos")
+}
+
+model Votacao {
+  id          Int           @id @default(1) // registro único
+  status      StatusVotacao @default(NAO_INICIADA)
+  abertaEm    DateTime?
+  encerradaEm DateTime?
+
+  @@map("votrix_votacao")
+}

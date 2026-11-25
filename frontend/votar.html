@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Votrix · Votação</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%230A0E1A%27/%3E%3Cpath d=%27M9 9l14 14M23 9L9 23%27 stroke=%27%2322D3EE%27 stroke-width=%273.5%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topo">
+    <span class="logo">VOTRI<span>X</span></span>
+    <div class="topo-dir">
+      <span id="statusVotacao"></span>
+      <span class="texto-2 pequeno" id="nomeUsuario"></span>
+      <button class="btn btn-fantasma btn-pequeno" id="btnSair">Sair</button>
+    </div>
+  </header>
+
+  <main class="conteudo">
+    <div id="alerta" class="oculto" role="alert"></div>
+
+    <p class="carregando" id="carregando">Carregando...</p>
+
+    <!-- Já votou (RN16) -->
+    <section id="secaoComprovante" class="card comprovante oculto">
+      <div class="check" aria-hidden="true">✓</div>
+      <h2>Voto registrado</h2>
+      <p class="texto-2">Você votou em</p>
+      <p class="projeto-votado" id="projetoVotado"></p>
+      <p class="texto-2 pequeno" id="horaVoto"></p>
+      <p class="texto-2 pequeno" style="margin-top:1rem" id="avisoResultado">O voto é definitivo. O resultado sai quando a votação for encerrada.</p>
+      <a href="podio.html" class="btn oculto" id="btnPodio" style="margin-top:1.2rem">Ver o pódio</a>
+      <div style="margin-top:1.5rem">
+        <button class="btn btn-primario btn-bloco" id="btnProximo">Próximo eleitor</button>
+        <p class="texto-2 pequeno" style="margin-top:.6rem" id="saidaAuto"></p>
+      </div>
+    </section>
+
+    <!-- Lista de projetos -->
+    <section id="secaoProjetos" class="oculto">
+      <div class="cabecalho-secao">
+        <h2>Escolha seu projeto</h2>
+        <span class="texto-2 pequeno" id="qtdProjetos"></span>
+      </div>
+      <div class="grade-projetos" id="gradeProjetos"></div>
+    </section>
+  </main>
+
+  <!-- RN15: confirmação antes de gravar -->
+  <dialog id="modalConfirmar">
+    <h2>Confirmar voto</h2>
+    <p>Confirmar voto em <strong id="nomeConfirmar" style="color:var(--ciano)"></strong>?</p>
+    <p class="texto-2 pequeno" style="margin-top:.5rem">Esta ação não pode ser desfeita.</p>
+    <div class="acoes-modal">
+      <button class="btn btn-fantasma" id="btnCancelar" type="button">Cancelar</button>
+      <button class="btn btn-primario" id="btnConfirmar" type="button">Confirmar voto</button>
+    </div>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/votar.js"></script>
+</body>
+</html>

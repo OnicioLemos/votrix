@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Votrix · Dashboard</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%230A0E1A%27/%3E%3Cpath d=%27M9 9l14 14M23 9L9 23%27 stroke=%27%2322D3EE%27 stroke-width=%273.5%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topo">
+    <span class="logo">VOTRI<span>X</span></span>
+    <div class="topo-dir">
+      <a href="podio.html" class="pequeno">Pódio</a>
+      <span class="texto-2 pequeno" id="nomeUsuario"></span>
+      <button class="btn btn-fantasma btn-pequeno" id="btnSair">Sair</button>
+    </div>
+  </header>
+
+  <main class="conteudo">
+    <div class="painel-topo">
+      <div>
+        <h1>Dashboard</h1>
+        <div style="margin-top:.5rem" id="statusVotacao"></div>
+      </div>
+      <div class="acoes">
+        <button class="btn btn-primario oculto" id="btnAbrir">Abrir votação</button>
+        <button class="btn btn-perigo oculto" id="btnEncerrar">Encerrar votação</button>
+        <a class="btn oculto" id="btnVerPodio" href="podio.html">Ver pódio</a>
+      </div>
+    </div>
+
+    <div id="alerta" class="oculto" role="alert"></div>
+
+    <!-- RN24: contadores -->
+    <section class="contadores">
+      <div class="contador-card"><div class="rotulo">Total de votos</div><div class="valor" id="totalVotos">–</div></div>
+      <div class="contador-card"><div class="rotulo">Eleitores cadastrados</div><div class="valor" id="totalEleitores">–</div></div>
+      <div class="contador-card"><div class="rotulo">Participação</div><div class="valor" id="participacao">–</div></div>
+      <div class="contador-card"><div class="rotulo">Projetos ativos</div><div class="valor" id="projetosAtivos">–</div></div>
+    </section>
+
+    <!-- RN24/RN25: gráfico + legenda -->
+    <section class="duas-colunas">
+      <div class="card">
+        <h2>Distribuição dos votos</h2>
+        <div class="area-grafico" id="areaGrafico"><canvas id="grafico" aria-label="Gráfico de votos por projeto"></canvas></div>
+        <div class="grafico-vazio oculto" id="graficoVazio">Nenhum voto ainda</div>
+        <p class="atualizado" id="atualizado"></p>
+      </div>
+      <div class="card">
+        <h2>Percentual por projeto</h2>
+        <ul class="legenda" id="legenda"></ul>
+      </div>
+    </section>
+
+    <!-- Parcial: gráfico de barras atualizado a cada 3 minutos -->
+    <section class="card" style="margin-bottom:1.5rem">
+      <div class="cabecalho-secao">
+        <h2>Parcial</h2>
+        <div class="acoes-parcial">
+          <span class="texto-2 pequeno" id="infoParcial"></span>
+          <button class="btn btn-pequeno" id="btnAtualizarParcial">Atualizar agora</button>
+        </div>
+      </div>
+      <div class="area-parcial" id="areaParcial"><canvas id="graficoParcial" aria-label="Parcial de votos por projeto"></canvas></div>
+      <div class="grafico-vazio oculto" id="parcialVazio">Nenhum voto ainda</div>
+    </section>
+
+    <!-- RF06: CRUD de projetos -->
+    <section class="card" style="margin-bottom:1.5rem">
+      <div class="cabecalho-secao">
+        <h2>Projetos</h2>
+        <button class="btn btn-pequeno" id="btnNovo">+ Novo projeto</button>
+      </div>
+      <p class="texto-2 pequeno oculto" id="avisoNovo" style="margin-bottom:.8rem">
+        Com a votação aberta não é possível cadastrar projetos novos (RN21); só corrigir textos ou desativar.
+      </p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Projeto</th><th>Equipe</th><th>Estande</th><th>Votos</th><th>Situação</th><th>Ações</th></tr></thead>
+          <tbody id="tabelaProjetos"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- RNF08: eleitores com CPF mascarado -->
+    <section class="card">
+      <div class="cabecalho-secao">
+        <h2>Eleitores</h2>
+        <span class="texto-2 pequeno">CPF mascarado (LGPD). Mostra se votou, nunca em quem.</span>
+      </div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Nome</th><th>CPF</th><th>Cadastro</th><th>Votou</th></tr></thead>
+          <tbody id="tabelaEleitores"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Formulário de projeto -->
+  <dialog id="modalProjeto">
+    <h2 id="tituloModal">Novo projeto</h2>
+    <div id="alertaProjeto" class="oculto" role="alert"></div>
+    <form id="formProjeto" novalidate>
+      <div class="campo">
+        <label for="pNome">Nome *</label>
+        <input id="pNome" name="nome" maxlength="80" required>
+      </div>
+      <div class="campo">
+        <label for="pEquipe">Equipe / integrantes *</label>
+        <input id="pEquipe" name="equipe" maxlength="200" required>
+      </div>
+      <div class="campo">
+        <label for="pDescricao">Descrição</label>
+        <textarea id="pDescricao" name="descricao" maxlength="500"></textarea>
+        <span class="contador" id="contDescricao">0/500</span>
+      </div>
+      <div class="campo">
+        <label for="pEstande">Estande / número</label>
+        <input id="pEstande" name="estande" maxlength="20">
+      </div>
+      <div class="campo">
+        <label for="pImagem">URL da imagem (16:9, ideal 1280×720)</label>
+        <input id="pImagem" name="imagemUrl" type="url" placeholder="https://...">
+      </div>
+      <div class="acoes-modal">
+        <button class="btn btn-fantasma" type="button" id="btnCancelarProjeto">Cancelar</button>
+        <button class="btn btn-primario" type="submit" id="btnSalvarProjeto">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- RN28: confirmação explícita do encerramento -->
+  <dialog id="modalEncerrar" class="perigo">
+    <h2>Encerrar votação?</h2>
+    <p>O encerramento é <strong>irreversível</strong>. Nenhum voto ou cadastro será aceito depois, e o pódio fica público.</p>
+    <div class="campo" style="margin-top:1rem">
+      <label for="confirmaTexto">Digite ENCERRAR para confirmar</label>
+      <input id="confirmaTexto" autocomplete="off">
+    </div>
+    <div class="acoes-modal">
+      <button class="btn btn-fantasma" type="button" id="btnCancelarEncerrar">Cancelar</button>
+      <button class="btn btn-perigo" type="button" id="btnConfirmarEncerrar" disabled>Encerrar agora</button>
+    </div>
+  </dialog>
+
+  <!-- Chart.js servido pela API; se não estiver disponível, usa o CDN -->
+  <script src="/vendor/chart.umd.min.js"
+    onerror="var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js';document.head.appendChild(s);"></script>
+  <script src="config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
